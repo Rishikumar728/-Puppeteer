@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Flights Test</title>
+</head>
+<body>
+  <script>
+    const puppeteer = require('puppeteer');
+
+    async function runTest() {
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+
+      await page.goto('https://www.google.com/flights');
+
+      await page.type('[aria-label="Source"]', 'Delhi');
+      await page.type('[aria-label="Destination"]', 'Jaipur');
+     
+      await page.click('button[aria-label="Search flights"]');
+
+      await page.waitForSelector('.gws-flights-results__result-item', { visible: true });
+
+      const priceElement = await page.$('.gws-flights-results__price');
+      const price = await page.evaluate(element => element.textContent, priceElement);
+      console.log('Price:', price);
+
+      await browser.close();
+    }
+
+    runTest();
+  </script>
+</body>
+</html>
